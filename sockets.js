@@ -10,28 +10,33 @@ module.exports = function (app, io) {
 		});
 		socket.on('getBoard', function (callback) {
 			var game = lobby.getGame(currentGameId);
-			callback(game.getBoard());
+			if (game){
+				callback(game.getBoard());
+			}
 		});
 		socket.on('makeMove', function (data, callback) {
 			var game = lobby.getGame(currentGameId);
-			var board = game.makeMove(data.x, data.y, data.player);
-			callback(board);
-			io.sockets.emit('boardChanged', board);
+			if (game){
+				var board = game.makeMove(data.x, data.y, data.player);
+				callback(board);
+				io.sockets.emit('boardChanged', board);
 
-			var checkWin = game.checkWin();
-			console.log("checkWin", checkWin);
-			if (checkWin !== 0) {
-				io.sockets.emit('gameOver', checkWin);
-				var newBoard = game.resetBoard();
-				io.sockets.emit('boardChanged', newBoard);
+				var checkWin = game.checkWin();
+				console.log("checkWin", checkWin);
+				if (checkWin !== 0) {
+					io.sockets.emit('gameOver', checkWin);
+					var newBoard = game.resetBoard();
+					io.sockets.emit('boardChanged', newBoard);
+				}
 			}
-
 		});
 
 		socket.on('resetGame', function () {
 			var game = lobby.getGame(currentGameId);
-			var newBoard = game.resetBoard();
-			io.sockets.emit('boardChanged', newBoard);
+			if (game){
+				var newBoard = game.resetBoard();
+				io.sockets.emit('boardChanged', newBoard);
+			}
 		});
 	});
 
