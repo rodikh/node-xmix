@@ -1,7 +1,6 @@
-module.exports = function (app) {
+module.exports = function (app, io) {
 	'use strict';
 	var gameController = require('./gameController');
-	var io = require('socket.io').listen(3001, { log: false });
 
 	io.sockets.on('connection', function (socket) {
 		socket.on('getBoard', function (callback) {
