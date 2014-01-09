@@ -1,14 +1,28 @@
 <style>
     .board{
-        width: 200px;
-        height: 200px;
         margin: 40px auto;
+        text-align: center;
+    }
+    .board table{
+        margin:auto;
+        border: 1px solid #555;
     }
     .board td{
-        font-size: 24px;
+        width:70px;
+        height:70px;
+        font-size: 30px;
+        border: 1px solid #555;
     }
-    .board td{
-        color:red;
+    .board td.red:before{
+        content:"X";
+        color: blue;
+    }
+    .board td.blue:before{
+        content:"O";
+        color: red;
+    }
+    .board td:before{
+        content:"";
     }
 </style>
 
@@ -74,15 +88,14 @@
             var tr = $(this);
             tr.find('td').each(function (j) {
                 var td = $(this);
-                td.html(board[i][j]);
+                td.removeClass().addClass("player"+board[i][j]);
             })
         });
     }
     getBoard();
 
     $('.board td').click(function () {
-        var value = parseInt($(this).text(), 10);
-        if (value === 0) {
+        if ($(this).hasClass('player0')){
             makeMove($(this).attr('data-x'), $(this).parent('tr').attr('data-y'));
         }
     });
