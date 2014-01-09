@@ -1,23 +1,36 @@
 module.exports = function (app, io) {
 	'use strict';
-	var gameController = require('./gameController');
+	var lobby = require('./lobbyController');
 
 	io.sockets.on('connection', function (socket) {
+		var currentGameId;
+		socket.on('joinGame', function (gameId) {
+			socket.join(gameId);
+			currentGameId = gameId;
+		});
 		socket.on('getBoard', function (callback) {
-			callback(gameController.getBoard());
+			var game = lobby.getGame(currentGameId);
+			callback(game.getBoard());
 		});
 		socket.on('makeMove', function (data, callback) {
-			var result = gameController.makeMove(data.x, data.y, data.player);
-			callback(result);
-//			if (typeof result === "array"){
-				io.sockets.emit('boardChanged', result);
-//			} else {
-//				io.sockets.emit('gameOver', result);
-//			}
+			var game = lobby.getGame(currentGameId);
+			var board = game.makeMove(data.x, data.y, data.player);
+			callback(board);
+			io.sockets.emit('boardChanged', board);
+
+			var checkWin = game.checkWin();
+			console.log("checkWin", checkWin);
+			if (checkWin !== 0) {
+				io.sockets.emit('gameOver', checkWin);
+				var newBoard = game.resetBoard();
+				io.sockets.emit('boardChanged', newBoard);
+			}
+
 		});
 
 		socket.on('resetGame', function () {
-			var newBoard = gameController.resetBoard();
+			var game = lobby.getGame(currentGameId);
+			var newBoard = game.resetBoard();
 			io.sockets.emit('boardChanged', newBoard);
 		});
 	});

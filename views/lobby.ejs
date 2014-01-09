@@ -1,0 +1,22 @@
+<style>
+
+</style>
+
+<h2>Lobby</h2>
+<ul>
+    <% for(i in games) { %>
+    <li>
+        <a href='game/<%= games[i].id %>'>
+            <%= games[i].id %>
+        </a>
+    </li>
+    <% } %>
+</ul>
+<a href="/create_game"><button class="create" action="#">Create new game</button></a>
+
+<script src="/jquery.min.js"></script>
+<script>
+    $('.create').click(function (){
+
+    });
+</script>

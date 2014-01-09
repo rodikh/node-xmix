@@ -12,6 +12,7 @@
     }
 </style>
 
+<h2>gameId: <%= gameId %></h2>
 <div class="board">
     <table>
         <tr data-y="0"><td data-x="0"></td><td data-x="1"></td><td data-x="2"></td></tr>
@@ -23,10 +24,12 @@
 <button class="player" data-player="2">Be player 2</button>
 <button class="reset">Reset</button>
 
-<script src="jquery.min.js"></script>
+<script src="/jquery.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
     var socket = io.connect('/');
+    var gameId = '<%= gameId %>';
+    socket.emit('joinGame', gameId);
     var board = [];
     var player = "1";
 
@@ -34,6 +37,15 @@
         board = serverBoard;
         drawBoard();
     });
+    socket.on('gameOver', function (winner) {
+        if (winner < 0) {
+            alert('Game over: Tie');
+        } else {
+            alert('Game over: Winning player: ' + winner);
+        }
+        drawBoard();
+    });
+
     function getBoard () {
         socket.emit('getBoard', function (serverBoard) {
             board = serverBoard;
@@ -46,8 +58,10 @@
         var obj = {x: x, y:y, player:player};
         console.log("making move", obj)
         socket.emit('makeMove', obj, function (serverBoard) {
-            board = serverBoard;
-            console.log('board:', board);
+            if (typeof serverBoard === "array") {
+                board = serverBoard;
+                console.log('board:', board);
+            }
         });
     }
 

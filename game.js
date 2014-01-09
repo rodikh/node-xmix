@@ -34,7 +34,5 @@ var io = socketio.listen(server, { log: false });
 require('./routes')(app);
 require('./sockets')(app, io);
 
-
-
 // Expose application
 module.exports = exports = app;
