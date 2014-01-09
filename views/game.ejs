@@ -1,0 +1,78 @@
+<style>
+    .board{
+        width: 200px;
+        height: 200px;
+        margin: 40px auto;
+    }
+    .board td{
+        font-size: 24px;
+    }
+    .board td{
+        color:red;
+    }
+</style>
+
+<div class="board">
+    <table>
+        <tr data-y="0"><td data-x="0"></td><td data-x="1"></td><td data-x="2"></td></tr>
+        <tr data-y="1"><td data-x="0"></td><td data-x="1"></td><td data-x="2"></td></tr>
+        <tr data-y="2"><td data-x="0"></td><td data-x="1"></td><td data-x="2"></td></tr>
+    </table>
+</div>
+<button class="player" data-player="1">Be player 1</button>
+<button class="player" data-player="2">Be player 2</button>
+<button class="reset">Reset</button>
+
+<script src="jquery.min.js"></script>
+<script src="http://10.100.101.107:3001/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://10.100.101.107:3001/');
+    var board = [];
+    var player = "1";
+
+    socket.on('boardChanged', function (serverBoard) {
+        board = serverBoard;
+        drawBoard();
+    });
+    function getBoard () {
+        socket.emit('getBoard', function (serverBoard) {
+            board = serverBoard;
+            console.log('board:', board);
+            drawBoard();
+        });
+    }
+
+    function makeMove (x, y) {
+        var obj = {x: x, y:y, player:player};
+        console.log("making move", obj)
+        socket.emit('makeMove', obj, function (serverBoard) {
+            board = serverBoard;
+            console.log('board:', board);
+        });
+    }
+
+
+    function drawBoard () {
+        $('.board table tr').each(function (i) {
+            var tr = $(this);
+            tr.find('td').each(function (j) {
+                var td = $(this);
+                td.html(board[i][j]);
+            })
+        });
+    }
+    getBoard();
+
+    $('.board td').click(function () {
+        var value = parseInt($(this).text(), 10);
+        if (value === 0) {
+            makeMove($(this).attr('data-x'), $(this).parent('tr').attr('data-y'));
+        }
+    });
+    $('.reset').click(function () {
+        socket.emit('resetGame');
+    });
+    $('.player').click(function (){
+        player = $(this).attr('data-player');
+    })
+</script>
