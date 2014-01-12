@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="/css/game.css">
+
+<h2>gameId: <%= game.id %></h2>
+
+<div class="board" style="display:none">
+    <table>
+        <tr><td data-x="0"></td><td data-x="1"></td><td data-x="2"></td></tr>
+        <tr><td data-x="3"></td><td data-x="4"></td><td data-x="5"></td></tr>
+        <tr><td data-x="6"></td><td data-x="7"></td><td data-x="8"></td></tr>
+    </table>
+</div>
+<div class="players">
+	<ul></ul>
+</div>
+<button class="reset">Reset</button>
+
+<a href="/">Back to Lobby</a>
+
+<script src="/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('/');
+    var gameId = '<%= game.id %>';
+    socket.emit('joinGame', gameId, function (gameData) {
+		player = gameData.playerId;
+		players = gameData.players;
+		getBoard();
+		renderDetails();
+		bindSocketEvents();
+	});
+    var board = [];
+    var player = -1;
+	var players = [];
+
+	function bindSocketEvents() {
+		socket.on('boardChanged', function (serverBoard) {
+			board = serverBoard;
+			renderBoard();
+		});
+		socket.on('gameOver', function (winner) {
+			if (winner < 0) {
+				alert('Game over: Tie');
+			} else {
+				alert('Game over: Winning player: ' + winner);
+			}
+			renderBoard();
+		});
+		socket.on('playerJoined', function (player) {
+			players.push(player);
+			renderDetails();
+		});
+		socket.on('playerLeft', function (player) {
+			players.splice(players.indexOf(player), 1);
+			renderDetails();
+		});
+	}
+
+    function getBoard () {
+        socket.emit('getBoard', function (serverBoard) {
+            board = serverBoard;
+            console.log('board:', board);
+            renderBoard();
+        });
+    }
+
+    function makeMove (x) {
+        var obj = {x: x, player:player};
+        console.log("making move", obj)
+        socket.emit('makeMove', obj, function (serverBoard) {
+            if (typeof serverBoard === "array") {
+                board = serverBoard;
+                console.log('board:', board);
+            }
+        });
+    }
+
+
+    function renderBoard () {
+		$('.board').show().find('td').each(function (i) {
+			var td = $(this);
+			td.removeClass().addClass("player"+board[i]);
+        });
+    }
+
+	function renderDetails () {
+		var playersDiv = $('.players ul').empty(),
+			i;
+		for (i in players) {
+			playersDiv.append('<li>Player ' + players[i]+ '</li>');
+		}
+	}
+
+    $('.board td').click(function () {
+        if ($(this).hasClass('player0')){
+            makeMove($(this).attr('data-x'));
+        }
+    });
+    $('.reset').click(function () {
+        socket.emit('resetGame');
+    });
+    $('.player').click(function (){
+        player = $(this).attr('data-player');
+    })
+</script>

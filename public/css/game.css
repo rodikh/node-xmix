@@ -1,0 +1,28 @@
+/* line 1, ../../scss/game.scss */
+.board {
+  margin: 40px auto;
+  text-align: center;
+}
+/* line 5, ../../scss/game.scss */
+.board table {
+  margin: auto;
+  border: 1px solid #555;
+}
+/* line 9, ../../scss/game.scss */
+.board table td {
+  width: 70px;
+  height: 70px;
+  font-size: 30px;
+  border: 1px solid #555;
+  text-align: center;
+}
+/* line 16, ../../scss/game.scss */
+.board table td.player1:before {
+  content: "X";
+  color: blue;
+}
+/* line 20, ../../scss/game.scss */
+.board table td.player2:before {
+  content: "O";
+  color: red;
+}

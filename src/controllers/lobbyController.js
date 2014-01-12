@@ -1,10 +1,10 @@
 (function () {
 	'use strict';
-	var gameController = require('./gameController');
+	var GameController = require('./GameController');
 	module.exports = {
 		// The only exported function
 		createGame: function () {
-			var game = new gameController();
+			var game = new GameController();
 			games.push(game);
 			game.id = games.indexOf(game);
 			return game;
