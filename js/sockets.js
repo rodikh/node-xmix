@@ -1,6 +1,6 @@
 module.exports = function (app, io) {
 	'use strict';
-	var lobby = require('./lobbyController');
+	var lobby = require('./controllers/lobbyController');
 
 	io.sockets.on('connection', function (socket) {
 		var currentGameId;

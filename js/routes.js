@@ -2,8 +2,8 @@ module.exports = function (app) {
 	'use strict';
 	var util = require('util');
 
-	var lobbyController = require('./lobbyController');
-	var gameController = require('./gameController');
+	var lobbyController = require('./controllers/lobbyController');
+	var gameController = require('./controllers/gameController');
 
 	app.get('/', function (request, response) {
 		response.render('lobby.ejs', {games: lobbyController.getGames()});

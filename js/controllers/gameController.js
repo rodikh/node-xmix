@@ -18,6 +18,7 @@
 		},
 		this.resetBoard = function () {
 			board = [[0,0,0],[0,0,0],[0,0,0]];
+			turn = 1;
 			return board;
 		},
 		this.checkWin = function () {
