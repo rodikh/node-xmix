@@ -4,12 +4,14 @@ var express = require('express'),
 	http = require('http'),
 	path = require('path'),
 	app = express(),
-	socketio = require('socket.io');
+	socketio = require('socket.io'),
+	engine = require('ejs-locals');
 
 // Configure express
 app.configure(function () {
 	app.set('port', process.env.PORT || 3000);
 	app.set('views', path.join(__dirname, 'views'));
+	app.engine('ejs', engine);
 	app.set('view engine', 'ejs');
 	app.use(express.static(path.join(__dirname, '../public')));
 	app.use(express.favicon());

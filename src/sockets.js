@@ -37,16 +37,16 @@ module.exports = function (app, io) {
 			if (socket.game) {
 				var game = lobby.getGame(socket.game.id);
 				if (game){
-					var board = game.makeMove(data.x, data.player);
+					var board = game.makeMove(data.x, socket.playerId);
 					callback(board);
-					io.sockets.emit('boardChanged', board);
+					io.sockets.in(game.id).emit('boardChanged', board);
 
 					var checkWin = game.checkWin();
 					console.log("checkWin", checkWin);
 					if (checkWin !== 0) {
-						io.sockets.emit('gameOver', checkWin);
+						io.sockets.in(game.id).emit('gameOver', checkWin);
 						var newBoard = game.resetBoard();
-						io.sockets.emit('boardChanged', newBoard);
+						io.sockets.in(game.id).emit('boardChanged', newBoard);
 					}
 				}
 			}
@@ -57,7 +57,7 @@ module.exports = function (app, io) {
 				var game = lobby.getGame(socket.game.id);
 				if (game){
 					var newBoard = game.resetBoard();
-					io.sockets.emit('boardChanged', newBoard);
+					io.sockets.in(game.id).emit('boardChanged', newBoard);
 				}
 			}
 		});
