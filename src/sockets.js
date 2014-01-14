@@ -4,25 +4,25 @@ module.exports = function (app, io) {
 
 	io.sockets.on('connection', function (socket) {
 		socket.on('joinGame', function (gameId, callback) {
-			socket.join(gameId);
+			socket.join('game'+gameId);
 			var game = lobby.getGame(gameId);
 			var player = game.addPlayer(socket);
 			if (player) {
 				socket.game = game;
 				socket.playerId = player;
-				console.log("player:" + player + " joined game:" + gameId);
-				io.sockets.in(gameId).emit('playerJoined', socket.playerId);
+//				console.log("player:" + player + " joined game:" + gameId);
+				io.sockets.in('game'+gameId).emit('playerJoined', socket.playerId);
 				if (typeof callback === "function") {
 					callback({playerId: player, players: game.getPlayers()});
 				}
 			} else{
-				console.log("game " + gameId + " is full! cannot join");
+//				console.log("game " + gameId + " is full! cannot join");
 			}
 		});
 		socket.on('disconnect', function () {
 			if (socket.game) {
 				var index = socket.game.removePlayer(socket);
-				io.sockets.in(socket.game.id).emit('playerLeft', socket.playerId);
+				io.sockets.in('game'+socket.game.id).emit('playerLeft', socket.playerId);
 			}
 		});
 		socket.on('getBoard', function (callback) {
@@ -39,14 +39,15 @@ module.exports = function (app, io) {
 				if (game){
 					var board = game.makeMove(data.x, socket.playerId);
 					callback(board);
-					io.sockets.in(game.id).emit('boardChanged', board);
+					io.sockets.in('game'+game.id).emit('boardChanged', board);
+					console.log("emmiting to ", game.id, " sockets: ", io.sockets.in('game'+game.id));
 
 					var checkWin = game.checkWin();
-					console.log("checkWin", checkWin);
+//					console.log("checkWin", checkWin);
 					if (checkWin !== 0) {
-						io.sockets.in(game.id).emit('gameOver', checkWin);
+						io.sockets.in('game'+game.id).emit('gameOver', checkWin);
 						var newBoard = game.resetBoard();
-						io.sockets.in(game.id).emit('boardChanged', newBoard);
+						io.sockets.in('game'+game.id).emit('boardChanged', newBoard);
 					}
 				}
 			}
@@ -57,7 +58,7 @@ module.exports = function (app, io) {
 				var game = lobby.getGame(socket.game.id);
 				if (game){
 					var newBoard = game.resetBoard();
-					io.sockets.in(game.id).emit('boardChanged', newBoard);
+					io.sockets.in('game'+game.id).emit('boardChanged', newBoard);
 				}
 			}
 		});

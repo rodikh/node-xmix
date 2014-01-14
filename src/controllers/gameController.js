@@ -7,7 +7,7 @@
 		};
 		this.makeMove = function (x, player) {
 			if (parseInt(player, 10) === turn) {
-				console.log("making move", x, player);
+//				console.log("making move", x, player);
 				board[x] = player;
 				turn = 3 - turn;
 				return board;

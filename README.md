@@ -32,7 +32,7 @@ TODO:
 
 Known Issues:
 
-* socket events sent to all rooms instead of only socket's room
+* ~~socket events sent to all rooms instead of only socket's room~~
 
 Future:
 
