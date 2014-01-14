@@ -28,6 +28,7 @@ TODO:
 * ~~manage sockets in rooms~~
 * ~~apply actual directory structure~~
 * design tic-tac-toe game
+* delete game if empty (in removePlayer method)
 
 Known Issues:
 
