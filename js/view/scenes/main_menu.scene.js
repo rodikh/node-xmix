@@ -28,7 +28,8 @@
         var screenContainer = new createjs.Container();
         this.setBackground(screenContainer, 'bg-menu');
 
-        this.addContainer(this.createText('Xmix'));
+        var text = this.createText('Xmix');
+        this.addContainer(text, 'title', screenContainer);
 
         drawMenu(screenContainer, menuButtons, this);
         this.addContainer(screenContainer, 'screen');

@@ -34,7 +34,7 @@
      * Adds the first container as a child of a second container.
      * If no second container passed, adds the first container to the stage.
      * @param container {createjs.Container}
-     * @param name
+     * @param [name]
      * @param [ctx] {createjs.Container}
      */
     GraphicsEngine.prototype.addContainer = function (container, name, ctx) {
@@ -75,10 +75,14 @@
     /**
      * Creates and returns a text container
      * @param {String} value text value to render
-     * @param {*} args configuration object for the container
+     * @param {*} [args] configuration object for the container
      * @returns {createjs.Container}
      */
     GraphicsEngine.prototype.createText = function (value, args) {
+        if (!args) {
+            args = {};
+        }
+        console.log('texting', value);
         var textContainer = new createjs.Container();
         var text = new createjs.Text(value, '20px Arial', '#ff7700');
         text.x = args.x || 100;

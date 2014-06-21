@@ -12,18 +12,24 @@
         gameContainer.addChild(buttonContainer);
 
         var game = window.game = new Game();
-
-        createjs.Ticker.removeAllEventListeners('tick');
-        createjs.Ticker.setFPS(10);
-
         game.reset();
-        createjs.Ticker.on('tick', this.gameLoop, this, false, {game: game, container: gameContainer, graphics: this});
+
+        var state = game.makeMove(1,1);
+        console.log('game',game.board);
+        console.log('game.state',state);
+
+        state = game.makeMove(5,2);
+        state = game.makeMove(0,1);
+        state = game.makeMove(3,2);
+        state = game.makeMove(2,1);
+
+        console.log('game',game.board);
+        console.log('game.state',state);
+
         this.stage.update();
     };
 
-    GraphicsEngine.prototype.gameLoop = function (event, args) {
 
-    };
 
     GraphicsEngine.prototype.exit = function(event) {
         /*jshint validthis: true */
